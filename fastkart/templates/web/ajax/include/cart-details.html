@@ -1,0 +1,153 @@
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        // Event listener for quantity adjustment buttons
+        $(".button-minus").on("click", function () {
+            var quantityField = $(this).closest(".quantity").find(".quantity-field");
+            var currentVal = parseInt(quantityField.val(), 10);
+            if (!isNaN(currentVal) && currentVal > 1) {
+                quantityField.val(currentVal - 1);
+            }
+        });
+
+        $(".button-plus").on("click", function () {
+            var quantityField = $(this).closest(".quantity").find(".quantity-field");
+            var currentVal = parseInt(quantityField.val(), 10);
+            if (!isNaN(currentVal)) {
+                quantityField.val(currentVal + 1);
+            }
+        });
+
+        // Event listener for add to cart button click (if it's different from the first one)
+        $(document).ready(function () {
+            // Event listener for add to cart button click
+            $('.add-to-cart').on('click', function (e) {
+                e.preventDefault();
+                // Check if the user is authenticated
+                if (!userIsAuthenticated()) {
+                    // Redirect or show a login modal
+                    window.location.href = '/accounts/login/';
+                    return;
+                }
+                var product_id = $(this).data('product-id');
+                var quantity = $("input[name='quantity']").val(); // Get the quantity value
+                var card = $(this).closest('.card-product');
+
+                $.ajax({
+                    type: "GET",
+                    url: '{% url "order:add_to_cart" pk=0 %}'.replace('0', product_id),
+                    data: { quantity: quantity }, // Include the quantity in the request
+                    success: function (data) {
+                        // Display success message
+                        $('#header_cart_count').text(data.cart_items_count);
+                        showAlert(data.message, "alert-success");
+                    },
+                    error: function (data) {
+                        showAlert(data.responseJSON.message, "alert-danger");
+                    }
+                });
+            });
+        });
+
+        // Function to check if the user is authenticated
+        function userIsAuthenticated() {
+            // Replace this condition with the actual way you check authentication in your project
+            return '{{ user.is_authenticated }}' === 'True';
+        }
+
+    });
+</script>
+
+
+{% comment %} <script>
+$(document).ready(function () {
+    // Function to update prices and offer percent for a specific card
+    function updatePricesAndOffer(card) {
+    // Implement your logic here
+    }
+
+    // Event listener for radio button click within each card
+    $('input[name="product_size"]').off('click').on('click', function () {
+    var card = $(this).closest('.cart-div');
+    updatePricesAndOffer(card);
+    });
+
+    // Event listener for add cart button click
+    $("#cart-add-btn").click(function () {
+    var product_Id = $('input[name="product_size"]:checked').val();
+    var quantity = $("input[name='quantity']").val();
+    var url = "/cart/add/?product_id=" + product_Id + "&quantity=" + quantity;
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function (data) {
+        window.location.href = "/shop/cart/";
+        showAlert(data.message, "alert-success");
+        },
+        error: function (data) {
+        if (data.status == '401') {
+            window.location.href = '/accounts/login/';
+        } else {
+            showAlert(data.responseJSON.message, "alert-danger");
+        }
+        }
+    });
+    });
+
+    // Event listener for quantity adjustment buttons
+    $(".button-minus").on("click", function () {
+    var quantityField = $(this).closest(".quantity").find(".quantity-field");
+    var currentVal = parseInt(quantityField.val(), 10);
+    if (!isNaN(currentVal) && currentVal > 1) {
+        quantityField.val(currentVal - 1);
+    }
+    });
+
+    $(".button-plus").on("click", function () {
+    var quantityField = $(this).closest(".quantity").find(".quantity-field");
+    var currentVal = parseInt(quantityField.val(), 10);
+    if (!isNaN(currentVal)) {
+        quantityField.val(currentVal + 1);
+    }
+    });
+
+    // Event listener for add to cart button click (if it's different from the first one)
+    $(document).ready(function () {
+        // Event listener for add to cart button click
+        $('.add-to-cart').on('click', function (e) {
+            e.preventDefault();
+            // Check if the user is authenticated
+            if (!userIsAuthenticated()) {
+                // Redirect or show a login modal
+                window.location.href = '/accounts/login/';
+                return;
+            }
+            var product_id = $(this).data('product-id');
+            var quantity = $("input[name='quantity']").val(); // Get the quantity value
+            var card = $(this).closest('.card-product');
+
+            $.ajax({
+                type: "GET",
+                url: '{% url "order:add_to_cart" pk=0 %}'.replace('0', product_id),
+                data: { quantity: quantity }, // Include the quantity in the request
+                success: function (data) {
+                    // Display success message
+                    $('#header_cart_count').text(data.cart_items_count);
+                    showAlert(data.message, "alert-success");
+                },
+                error: function (data) {
+                    showAlert(data.responseJSON.message, "alert-danger");
+                }
+            });
+        });
+    });
+    // Function to check if the user is authenticated
+    function userIsAuthenticated() {
+        // Replace this condition with the actual way you check authentication in your project
+        return '{{ user.is_authenticated }}' === 'True';
+    }
+    
+
+});
+</script> {% endcomment %}

@@ -1,0 +1,98 @@
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var total = $("#cart_total");
+        var totalAmount = $("#total_amount"); // Added this line
+        //var cartCountSpan = $("#header_cart_count .cart-list");  // Updated this line
+        var service_fee = $("#service_fee").text().replace('₹', '');
+        var sub_total = parseFloat(total.text().replace('₹', '')) + parseFloat(service_fee);
+        $("#sub_total").text("₹" + sub_total.toFixed(2));
+
+        $(".cart-minus-btn").click(function () {
+            var cartId = $(this).data("cart-id");
+            var product_id = $(this).data("product-id");
+            var url = "{% url 'order:minus_to_cart' %}?cart_id=" + cartId;
+            var product_qty = $("#product-qty" + product_id);
+            var product_price = $("#product-price" + product_id);
+            var mob_product_price = $("#mob-product-price" + product_id);
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    total.html("₹" + data.sub_total);
+                    totalAmount.html("₹" + data.sub_total); // Update the total here
+                    product_qty.val(data.quantity);
+                    product_price.html("₹" + data.product_grand_price);
+                    mob_product_price.html("₹" + data.product_grand_price);
+                    sub_total = parseFloat(data.sub_total) + parseFloat(service_fee);
+                    $("#sub_total").text("₹" + sub_total.toFixed(2));
+
+                    if (data.quantity == '0') {
+                        product_qty.val(1);
+                    }
+                },
+                error: function (data) {
+                    console.error("Error decreasing product quantity:", data.responseJSON.message);
+                }
+            });
+        });
+
+        $(".cart-add-btn").click(function () {
+            var product_Id = $(this).data("product-id");
+            var product_price = $("#product-price" + product_Id);
+            var mob_product_price = $("#mob-product-price" + product_Id);
+            var product_qty = $("#product-qty" + product_Id);
+            var url = "{% url 'order:add_to_cart' pk=0 %}";
+
+            $.ajax({
+                type: "GET",
+                url: url.replace('0', product_Id),
+                success: function (data) {
+                    total.html("₹" + data.sub_total);
+                    totalAmount.html("₹" + data.sub_total); // Update the total here
+                    product_qty.val(data.quantity);
+                    product_price.html("₹" + data.product_grand_price);
+                    mob_product_price.html("₹" + data.product_grand_price);
+                    sub_total = parseFloat(data.sub_total) + parseFloat(service_fee);
+                    $("#sub_total").text("₹" + sub_total.toFixed(2));
+                },
+                error: function (data) {
+                    console.error("Error adding item to the cart:", data.responseJSON.message);
+                }
+            });
+        });
+
+        $(".product-remove").click(function (e) {
+            e.preventDefault();
+            var cartItemId = $(this).data("cart-item-id");
+            var url = "{% url 'order:remove_cart_item' cart_item_id=0 %}".replace('0', cartItemId);
+        
+            var rowToRemove = $(this).closest("tr");
+        
+            $.ajax({
+                type: "GET",
+                url: url,
+                success: function (data) {
+                    // Remove the closest parent tr from the table immediately
+                    rowToRemove.remove();
+        
+                    total.html("₹" + data.total); 
+                    totalAmount.html("₹" + data.total);
+                    
+                    // Update the cart count in the header
+                    $("#header_cart_count").text(data.cart_items_count);
+        
+                    // You may also update the cart items section here if needed
+                },
+                error: function (data) {
+                    console.error("Error removing item from the cart:", data.responseJSON.message);
+                }
+            });
+        });
+
+    });
+</script>   
+
+

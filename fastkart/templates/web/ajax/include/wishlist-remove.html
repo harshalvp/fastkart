@@ -1,0 +1,40 @@
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.btn-wishlist').click(function (e) {
+            e.preventDefault();
+            var itemId = $(this).data('item-id');
+            var button = $(this);
+
+            $.ajax({
+                type: 'GET',
+                url: '/remove_from_wishlist/' + itemId + '/',
+                success: function (data) {
+                    if (data.wished) {
+                        button.closest('tr').remove();
+                        $('#wishlist-section').html(data.wishlist_html);
+                        $('#wishlist-count').text(data.wishlist_items_count);
+                        showAlert(data.message, "alert-success");
+                    } else {
+                        console.error('Item removal failed.');
+                        showAlert('Failed to remove item from wishlist', "alert-danger");
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) { 
+                    console.error('Error:', textStatus, errorThrown);
+                    //showAlert('Something went wrong. Please try again later.', "alert-danger");
+                }
+            });
+        });
+    });
+
+    function showAlert(message, alertClass) {
+        var alertContainer = $("#alert-container");
+        var alertDiv = $("<div>").addClass("alert " + alertClass).text(message);
+        alertContainer.append(alertDiv);
+
+        setTimeout(function() {
+            alertDiv.remove();
+        }, 5000);
+    }
+</script>

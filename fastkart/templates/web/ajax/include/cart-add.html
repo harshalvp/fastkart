@@ -1,0 +1,39 @@
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Event listener for add to cart button click
+        $('.add-to-cart').on('click', function (e) {
+            e.preventDefault();
+            
+            // Check if the user is authenticated
+            if (!userIsAuthenticated()) {
+                // Redirect or show a login modal
+                window.location.href = '/accounts/login/';
+                return;
+            }
+
+            var product_id = $(this).data('product-id');
+            var card = $(this).closest('.card-product');
+
+            $.ajax({
+                type: "GET",
+                url: '{% url "order:add_to_cart" pk=0 %}'.replace('0', product_id),
+                success: function (data) {
+                    // Display success message
+                    $('#header_cart_count').text(data.cart_items_count);
+                    showAlert(data.message, "alert-success");
+                },
+                error: function (data) {
+                    showAlert(data.responseJSON.message, "alert-danger");
+                }
+            });
+        });
+
+        // Function to check if the user is authenticated
+        function userIsAuthenticated() {
+            // Replace this condition with the actual way you check authentication in your project
+            return '{{ user.is_authenticated }}' === 'True';
+        }
+    });
+</script>

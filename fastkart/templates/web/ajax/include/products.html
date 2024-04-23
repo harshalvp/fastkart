@@ -1,0 +1,69 @@
+{% load static %}
+{% load my_filters %}
+
+<div class="col-md-4 col-6">
+    <div class="product">
+        <span class="pr_flash" style="background-color:{{product.background_color.code_color}}">{{product.background_color.name}}</span>
+        <div class="product_img">
+            <a href="shop-product-detail.html">
+                <img src="{{product.image.url}}" alt="product_img3">
+            </a>
+            <div class="product_qty">
+                <input type="hidden" value="1" min="1" class="form-control product_qty_input">
+            </div>
+            <div class="product_action_box">
+                <ul class="list_none pr_action_btn">
+                    <li class="add-to-cart" data-product-id="{{ product.id }}">
+                        <a href="#">
+                            <i class="icon-basket-loaded"></i> Add To Cart 
+                        </a>
+                    </li>
+                    <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
+                    <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
+                    <input type="hidden" class="form-control product_qty" value="1" min="1">
+                </ul>
+            </div>
+        </div>
+
+        <buttun class="btn-action btn-action-wishlist" data-bs-toggle="tooltip" data-bs-html="true" title="Wishlist">
+            <i class="icon-heart"></i>
+        </buttun>
+
+        <div class="product_info">
+            <h6 class="product_title"><a href="{{product.get_absolute_url}}">{{product.name}}</a></h6>
+            {% for color in product.availablesize_set.all %}
+                {% if color.regular_price %}
+                    <div class="product_price">
+                        <span class="price">${{ color.sale_price | discount_price:color.regular_price | floatformat:2 }}</span>
+                        <del>${{ color.sale_price | floatformat:2 }}</del>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="rating_wrap">
+                <div class="rating">
+                    <div class="product_rate" style="width:87%"></div>
+                </div>
+                <span class="rating_num">(25)</span>
+            </div>
+            <div class="pr_desc">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus blandit massa enim. Nullam id varius nunc id varius nunc.</p>
+            </div>
+            <div class="pr_switch_wrap">
+                <div class="product_color_switch">
+                    <span class="active" data-color="#333333"></span>
+                    <span data-color="#7C502F"></span>
+                    <span data-color="#2F366C"></span>
+                    <span data-color="#874A3D"></span>
+                </div>
+            </div>
+            <div class="list_product_action_box">
+                <ul class="list_none pr_action_btn">
+                    <li class="add-to-cart"><a href="#"><i class="icon-basket-loaded"></i> Add To Cart</a></li>
+                    <li><a href="shop-compare.html" class="popup-ajax"><i class="icon-shuffle"></i></a></li>
+                    <li><a href="shop-quick-view.html" class="popup-ajax"><i class="icon-magnifier-add"></i></a></li>
+                    <li><a href="#"><i class="icon-heart"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

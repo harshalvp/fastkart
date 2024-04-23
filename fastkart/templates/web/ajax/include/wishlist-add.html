@@ -1,0 +1,40 @@
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> 
+<script>
+    $(document).ready(function () {
+        $('.btn-wishlist').click(function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+            var button = $(this);
+    
+            $.ajax({
+            type: 'GET',
+            url: '/add_to_wishlist/' + productId + '/',
+            dataType: 'json',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            },
+            success: function (data) {    
+                // Update wishlist section
+                $('#wishlist-section').html(data.wishlist_html);
+    
+                // Update wishlist count
+                $('#wishlist-count').text(data.wishlist_items_count);
+            },
+            error: function(xhr, textStatus, errorThrown) {
+                console.log(xhr.status);
+                if (!userIsAuthenticated()) {
+                window.location.replace('/accounts/login/');
+                return;
+                }
+                else {
+                    console.log("Another error occurred:", textStatus);
+                }
+            }
+            });
+            function userIsAuthenticated() {
+            return 
+            }
+        });
+        }); 
+</script>

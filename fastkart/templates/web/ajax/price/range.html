@@ -1,0 +1,99 @@
+    
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ion-rangeslider@2.3.1/js/ion.rangeSlider.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to get URL parameter by name
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Get min_price and max_price from URL parameters
+        var initialMinPrice = parseInt(getParameterByName('min_price')) || 0;
+        var initialMaxPrice = parseInt(getParameterByName('max_price')) || 300;
+
+        // Initialize ionRangeSlider with initial values
+        $("#price-range").ionRangeSlider({
+            type: "double",
+            grid: false,
+            min: 0,
+            max: 300,
+            from: initialMinPrice,
+            to: initialMaxPrice,
+            prefix: "$",
+            onFinish: function (data) {
+                // Extract the selected price range and update the URL
+                var queryParams = 'min_price=' + data.from + '&max_price=' + data.to;
+                window.location.href = '/shop/?' + queryParams;
+                $.ajax({
+                    url: '/update_price_filter/',
+                    type: 'GET',
+                    data: queryParams,
+                    success: function (response) {
+                        // Update the product list with filtered data
+                        $('#product-container').html(response.html);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });                
+            }
+        });
+    });
+</script>
+  
+{% comment %} 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ion-rangeslider@2.3.1/js/ion.rangeSlider.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Function to get URL parameter by name
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Get min_price and max_price from URL parameters
+        var initialMinPrice = parseInt(getParameterByName('min_price')) || 0;
+        var initialMaxPrice = parseInt(getParameterByName('max_price')) || 300;
+
+        // Initialize ionRangeSlider with initial values
+        $("#price-range").ionRangeSlider({
+            type: "double",
+            grid: false,
+            min: 0,
+            max: 300,
+            from: initialMinPrice,
+            to: initialMaxPrice,
+            prefix: "$",
+            onFinish: function (data) {
+                // Extract the selected price range and update the URL
+                var queryParams = 'min_price=' + data.from + '&max_price=' + data.to;
+                window.location.href = '/shop/?' + queryParams;
+                $.ajax({
+                    url: '/update_price_filter/',
+                    type: 'GET',
+                    data: queryParams,
+                    success: function (response) {
+                        // Update the product list with filtered data
+                        $('#product-container').html(response.html);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });                
+            }
+        });
+    });
+</script> {% endcomment %}

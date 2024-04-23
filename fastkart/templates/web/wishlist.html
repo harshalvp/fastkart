@@ -1,0 +1,109 @@
+{% extends 'partial/base.html' %}
+{% load static %}
+{% block title %}Wishlist{% endblock %}
+
+{% block content %}
+{% load my_filters %}
+
+    <!-- Breadcrumb Section Start -->
+    <section class="breadcrumb-section pt-0">
+        <div class="container-fluid-lg">
+            <div class="row">
+                <div class="col-12">
+                    <div class="breadcrumb-contain">
+                        <h2>Wishlist</h2>
+                        <nav>
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{% url 'product:index' %}">
+                                        <i class="fa-solid fa-house"></i>
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Wishlist</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Wishlist Section Start -->
+    <section class="wishlist-section section-b-space">
+        <div class="container-fluid-lg">
+            <div class="row g-sm-3 g-2">
+                {% for item in wishlist_items %}
+                <div class="col-xxl-2 col-lg-3 col-md-4 col-6 product-box-contain">
+                    <div class="product-box-3 h-100">
+                        <div class="product-header">
+                            <div class="product-image">
+                                <a href="product-left-thumbnail.html">
+                                    <img src="{{item.product.image.url}}" class="img-fluid blur-up lazyload"
+                                        alt="">
+                                </a>
+
+                                <div class="product-header-top">
+                                    <button class="btn wishlist-button close_button remove-btn" data-id="{{ item.id }}">
+                                        <i data-feather="x"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-detail">
+                                <span class="span-name">Vegetable</span>
+                                <a href="product-left-thumbnail.html">
+                                    <h5 class="name">{{item.product.name}}</h5>
+                                </a>
+                                <h6 class="unit mt-1">250 ml</h6>
+                                <h5 class="price">
+                                    {% for color in item.product.availablesize_set.all %}
+                                            {% if color.regular_price %}
+                                                <td class="product-prices">₹
+                                                    {{ color.sale_price | discount_price:color.regular_price | floatformat:2 }}
+                                                </td>
+                                            {% else %}
+                                                <td class="product-prices">
+                                                    {{ color.sale_price | floatformat:2 }}
+                                                </td>
+                                            {% endif %}
+                                        {% endfor %}
+                                </h5>
+                                <div class="add-to-cart-box bg-white mt-2">
+                                    <button class="btn btn-add-cart addcart-button">Add
+                                        <span class="add-icon bg-light-gray">
+                                            <i class="fa-solid fa-plus"></i>
+                                        </span>
+                                    </button>
+                                    <div class="cart_qty qty-box">
+                                        <div class="input-group bg-white">
+                                            <button type="button" class="qty-left-minus bg-gray" data-type="minus"
+                                                data-field="">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                            <input class="form-control input-number qty-input" type="text"
+                                                name="quantity" value="0">
+                                            <button type="button" class="qty-right-plus bg-gray" data-type="plus"
+                                                data-field="">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Wishlist Section End -->
+
+    {% include "web/ajax/include/cart-add.html" %}
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'assets/js/wishlist.js' %}"></script>
+{% endblock %}

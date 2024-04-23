@@ -1,0 +1,73 @@
+<div class="section">
+	<div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive shop_cart_table">
+                	<table class="table">
+                    	<thead>
+                        	<tr>
+                            	<th class="product-thumbnail">&nbsp;</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-subtotal">Total</th>
+                                <th class="product-remove">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product_qty,item in cart_data.items %}
+                        	<tr>
+                            	<td class="product-thumbnail"><a href="#"><img src="{{item.image}}" alt="product1"></a></td>
+                                <td class="product-name" data-title="Product"><a href="{{item.name}}/{{product_qty}}">{{item.name}}</a></td>
+                                <td class="product-price" data-title="Price">${{item.price}}</td>
+                                <td class="product-quantity" data-title="Quantity"><div class="quantity">
+                                <input type="button" value="-" class="minus">
+                                <input type="text" name="quantity" value="{{item.qty}}" title="Qty" class="qty" size="4">
+                                <input type="button" value="+" class="plus">
+                              </div></td>
+                              	<td class="product-subtotal" data-title="Total">${% widthratio item.price 1 item.qty %}</td>
+                                <td class="product-remove delete-item" data-item="{{product_qty}}" ><a href="#"><i class="ti-close"></i></a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+            	<div class="medium_divider"></div>
+            	<div class="divider center_icon"><i class="ti-shopping-cart-full"></i></div>
+            	<div class="medium_divider"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+            	<div class="border p-3 p-md-4">
+                    <div class="heading_s1 mb-3">
+                        <h6>Cart Totals</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td class="cart_total_label">Cart Subtotal</td>
+                                    <td class="cart_total_amount">$349.00</td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">Shipping</td>
+                                    <td class="cart_total_amount">Free Shipping</td>
+                                </tr>
+                                <tr>
+                                    <td class="cart_total_label">Total</td>
+                                    <td class="cart_total_amount"><strong>${{total_amt}}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a href="#" class="btn btn-fill-out">Proceed To CheckOut</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
