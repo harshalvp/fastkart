@@ -234,6 +234,7 @@ class AvailableSize(models.Model):
 #         return str(self.name)
 
 
+
 class Product_Image(models.Model):
     image_product = models.ForeignKey(Product,on_delete=models.CASCADE)
     image = models.ImageField(upload_to = "media/product_image/")

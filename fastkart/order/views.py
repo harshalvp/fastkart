@@ -14,6 +14,7 @@ from product.models import Product
 from django.template.loader import render_to_string
 from django.views.generic import ListView
 from order.cart import Cart
+from .models import Coupon
 
 # Create your views here.
 # Wishlist
@@ -242,3 +243,23 @@ class CheckoutView(LoginRequiredMixin, FormView):
 
 def order_completed(request):
     return render(request, "web/order-completed.html")
+
+
+def apply_coupon(request):
+    if request.method == 'POST':
+        coupon_code = request.POST.get('coupon_code')  # Assuming you're using POST method for form submission
+        try:
+            coupon = Coupon.objects.get(code=coupon_code)
+            if coupon.is_valid():
+                
+                total_amount = request.session.get('total_amount', 0)
+                discount_amount = coupon.discount_amount
+                updated_total_amount = total_amount - discount_amount
+                request.session['total_amount'] = updated_total_amount
+                return render(request, 'cart.html', {'message': 'Coupon applied successfully'})
+            else:
+                return render(request, 'cart.html', {'error': 'Coupon is expired'})
+        except Coupon.DoesNotExist:
+            return render(request, 'cart.html', {'error': 'Invalid coupon code'})
+    else:
+        return render(request, 'cart.html')

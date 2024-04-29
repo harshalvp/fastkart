@@ -1,7 +1,7 @@
 {% extends 'partial/base.html' %}
 {% load static %}
 {% block title %}checkout-order{% endblock %}
-
+{% load my_filters %}
 {% block content %}
 
     <!-- Breadcrumb Section Start -->
@@ -136,7 +136,7 @@
                                     </div>
                                 </li>
 
-                                <li>
+                                {% comment %} <li>
                                     <div class="checkout-icon">
                                         <lord-icon target=".nav-item" src="https://cdn.lordicon.com/oaflahpk.json"
                                             trigger="loop-on-hover" colors="primary:#0baf9a" class="lord-icon">
@@ -218,9 +218,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+                                </li> {% endcomment %}
 
-                                <li>
+                                {% comment %} <li>
                                     <div class="checkout-icon">
                                         <lord-icon target=".nav-item" src="https://cdn.lordicon.com/qmcsqnle.json"
                                             trigger="loop-on-hover" colors="primary:#0baf9a,secondary:#0baf9a"
@@ -525,7 +525,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </li>
+                                </li> {% endcomment %}
                             </ul>
                         </div>
                     </div>
@@ -539,53 +539,23 @@
                             </div>
 
                             <ul class="summery-contain">
+                                {% for item in cart_items %}
                                 <li>
-                                    <img src="{% static "assets/images/vegetable/product/1.png" %}"
+                                    <img src="{{ item.product.image.url }}"
                                         class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Bell pepper <span>X 1</span></h4>
-                                    <h4 class="price">$32.34</h4>
+                                    <h4>{{item.product.name|truncatewords:2}} <span>X  {{item.quantity}}</span></h4>
+                                      
+                                    <h4 class="price">${{item.get_total_price}}</h4>
+                                    
                                 </li>
-
-                                <li>
-                                    <img src="{% static "assets/images/vegetable/product/2.png" %}"
-                                        class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Eggplant <span>X 3</span></h4>
-                                    <h4 class="price">$12.23</h4>
-                                </li>
-
-                                <li>
-                                    <img src="{% static "assets/images/vegetable/product/3.png" %}"
-                                        class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Onion <span>X 2</span></h4>
-                                    <h4 class="price">$18.27</h4>
-                                </li>
-
-                                <li>
-                                    <img src="{% static "assets/images/vegetable/product/4.png" %}"
-                                        class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Potato <span>X 1</span></h4>
-                                    <h4 class="price">$26.90</h4>
-                                </li>
-
-                                <li>
-                                    <img src="{% static "assets/images/vegetable/product/5.png" %}"
-                                        class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Baby Chili <span>X 1</span></h4>
-                                    <h4 class="price">$19.28</h4>
-                                </li>
-
-                                <li>
-                                    <img src="{% static "assets/images/vegetable/product/6.png" %}"
-                                        class="img-fluid blur-up lazyloaded checkout-image" alt="">
-                                    <h4>Broccoli <span>X 2</span></h4>
-                                    <h4 class="price">$29.69</h4>
-                                </li>
+                                {% endfor %}
+                                
                             </ul>
 
                             <ul class="summery-total">
                                 <li>
                                     <h4>Subtotal</h4>
-                                    <h4 class="price">$111.81</h4>
+                                    <h4 class="price">${{total}}</h4>
                                 </li>
 
                                 <li>
@@ -595,7 +565,7 @@
 
                                 <li>
                                     <h4>Tax</h4>
-                                    <h4 class="price">$29.498</h4>
+                                    <h4 class="price">${{total}}</h4>
                                 </li>
 
                                 <li>
